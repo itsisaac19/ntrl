@@ -81,7 +81,7 @@ const storage = new Storage({
   credentials: credentials,
 });
 
-const overrideWindow = true;
+let overrideWindow = false;
 
 type BodyType = {
   'userid': string;
@@ -174,6 +174,10 @@ export default component$(() => {
   ];
   if (!pageRoute || !possibleRoutes.includes(pageRoute)) {
     pageRoute = 'viewing-daily-prompt';
+  }
+
+  if (searchParams.get('overridewindow')) {
+    overrideWindow = true;
   }
 
   const customSPA = useStore({
