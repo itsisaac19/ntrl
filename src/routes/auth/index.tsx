@@ -1,6 +1,7 @@
 import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 
 import { AuthUI } from "~/components/router-head/auth-ui";
+import ImgNtrlLogo from '~/media/ntrl-logo-dark@2x.png?jsx';
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -27,7 +28,9 @@ export default component$(() => {
 
     return (
         <div class={`auth-wrapper ${loaded.value ? 'loaded' : ''}`}>
-            <div class="auth-landing-message">ntrl.</div>
+            <div class="auth-landing-message">
+                <ImgNtrlLogo />
+            </div>
             {
                 //@ts-ignore
                 <AuthUI view={'sign_up'} />

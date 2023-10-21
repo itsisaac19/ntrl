@@ -1,5 +1,5 @@
 import { $, component$, noSerialize, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import { useLocation, type DocumentHead, type RequestHandler } from "@builder.io/qwik-city";
+import { useLocation, type DocumentHead } from "@builder.io/qwik-city";
 
 import exifr from 'exifr';
 import dayjs from 'dayjs';
@@ -13,22 +13,6 @@ dayjs.extend(timezone);
 dayjs.extend(customParseFormat)
 dayjs.extend(duration)
 dayjs.extend(dayOfYear);
-
-import { Storage } from '@google-cloud/storage';
-
-const credentials = {
-  "type": "service_account",
-  "project_id": "constant-crow-377602",
-  "private_key_id": "3afac1223bd1108f05e0a7937806279c821f16d0",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDdwx3QV7IWJ+hx\nyNS0gWIS3yDn5nYEzhC9m5hapKtyB8kay7Z4FZDfdTp9IJ5sa2zpJeKRFa6d+tY1\n7mGlUN8TI8ltm8my5JT8XpVltKoMSg++hZOTDEXW9LOAxCqOwqIz8NHh+m8JZaBK\n5lwdjiHQH578Wl4QecinUFOF5iuO/70ki4GH25Bh5ZcZZCp27l2r7FvwhszTV7oe\nkEr8+FCUjz1ODZ3bZUjBVAv1t47SaPd5rcvXHdYjgZwfkQ19ju4idj4WgkvWo/3O\n8qeSJ9jrdxLZ4SCWcD8UjKFfEDm6Rxy9KIOvuzSkJSS/IyOHHN1ekBKpp5mS8i+7\nJl9Onn2bAgMBAAECggEAMCtvQO+jl8twYrLgfRrzjizYbXbyYMXP/hebpujI8tp9\nFOx2BKyOjPNeUoqwztUg0Z3wklo21UsEl69hl3KzGem2ma/yxoB/WjhDVFXDcCrw\nM465SQIr826wxQIXSm49pHGlbWQkFVL1V/+kt6jFcHtF4gPRFdwWOT2p/tZJ1OQR\njqHs/PMAhMe/KBY0mY8r7EgqQV0eZQwTV7CpN1mGLDZ683px/h/N6c3hawCCavlz\n+xgdyYkXtCspaLDqABbCGqigmDjn7WXtLrtzLZBb3aWanFjbEk+vPKoAewbGooiG\nDsF7irUZxxSyXsvbfyHLmevIT/edU7Tdq4AfLV6EtQKBgQDyzvOeV9p6bKEbuvqI\n2N6/CR2VcGwsoPc3YWSsPIL4Gk1VDb3KeirFC84AVQkp+4C7OG2k3he0f7+Dqkhb\ncitnTVfAXIRtQE54Qo7BUiUkHctE1cRmSWImSymkjUQZgjjBUWIEu89A/jF5iqSC\npHv+AwWNmN5vMOosK95rv8NfDwKBgQDpz3KmqtIdPHeeSURQE6hHi0sHm6yuRk/Z\n6rHgHt2swGqL3PvBNN4dtyC5WPvEoubsY/4OnJxCi1SV25NeCS5iAR6vM3fftvec\npR1hPveFn9UbiJha0ztwzJnzXmvlEQ5/1PxE9Buibsw7gu7tp+GJMjVyLb/DmBgn\n83y86D84tQKBgFkgDdx5cwCtDxYWtA+3S0vkFK/d7FcVXqk9Xq66J3jabrhhquC/\npyNdCeilTg/S+ZW/SL/Tpe/jVHEH+DdY2QW6JhO94f4YNLV/+NaNSITRSuOhc833\n8ccMn+R+1hhm7F5JeSkzpwe8RnzOn0Q1DC5Y/ZjUHBHEarB8CdCTOyuRAoGBAOL/\n8YQ3HMAd0NTwtU45h4vOhQ3h6olY4nXkEsZRsU7jkY4xAovWVD/tZ+wLpISI1EJ1\n4lc1XdCNjZXhFPabW1jzVWMsSRn+ffCrrhaYF6C4SSLuP10O8ArX2jAaYA6JvNYH\nZtVbWukdQVQWDvrVn3agNJuiJygzJmDDWTvfEGJxAoGABf4fSuHtoLp3xBgATVpj\n4KeUexduGC6X733EWyLxPilaF0FRnnOBV7gw8PDMdPd32nRUD1pcG9jPfRQOCJ0d\nt/r61I6EvQGSyVHb3H1/VYAPt6IgJk1SHpZnPj1xzC97UjMtr9N5cFKVeEjs+kRW\n1Jk/7gqdhwxT9CfX+N6Bjvo=\n-----END PRIVATE KEY-----\n",
-  "client_email": "storage@constant-crow-377602.iam.gserviceaccount.com",
-  "client_id": "112682772146194746875",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/storage%40constant-crow-377602.iam.gserviceaccount.com",
-  "universe_domain": "googleapis.com"
-}
 
 import { routeLoader$ } from '@builder.io/qwik-city';
 import { createServerClient } from 'supabase-auth-helpers-qwik';
@@ -66,9 +50,18 @@ export const useServerSupabaseClient = routeLoader$(async (requestEvent) => {
     throw requestEvent.redirect(302, '/auth');
   }
 
-  const { data: userJournals } = await supabaseClient.from('journals').select('*').eq('user_email', userEmail);
+  const { 
+    data: userJournals 
+  } = await supabaseClient.from('journals').select('*').eq('user_email', userEmail);
 
-  return { journals: userJournals as Row[], userId: userId, auth: auth };
+  console.log(requestEvent)
+
+
+  return { 
+    journals: userJournals ? userJournals as Row[] : [], 
+    userId: userId, 
+    auth: auth 
+  };
 });
 
 
@@ -76,76 +69,18 @@ export const useServerSupabaseClient = routeLoader$(async (requestEvent) => {
 import { questionBank } from '../components/questions.js';
 const questions = questionBank as { [key: string]: string };
 
-const storage = new Storage({
-  projectId: 'constant-crow-377602',
-  credentials: credentials,
-});
-
-type BodyType = {
-  'userid': string;
-} & {
-  [key: string]: {
-    [key: string]: File
-  };
-};
-
-export const onPost: RequestHandler = async (req) => {
-  const body = await req.parseBody() as BodyType;
-  console.log(body)
-
-  const { userid, ...fileObject } = body;
-  const fileKey = Object.keys(fileObject)[0];
-  const fileWrapper = body[fileKey];
-  const fileTypeKey = Object.keys(fileWrapper)[0];
-
-  const file = fileWrapper[fileTypeKey];
-  const prefix = userid;
-  const fileName = `${prefix}/${file.name}`;
-  
-  const destinationStream = storage.bucket('natural-bucket').file(fileName).createWriteStream({
-    metadata: {
-      contentType: file.type
-    }
-  })
-
-  const streamOperation: Promise<string> = new Promise((resolve, reject) => {
-    destinationStream.on('error', (err) => {
-      console.error(`Error uploading file: ${err}`);
-      reject(err)
-    });
-  
-    destinationStream.on('finish', () => {
-      console.log(`File uploaded to ${fileName}`);
-      resolve(fileName)
-    });
-  });
-
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
-  destinationStream.end(buffer)
-
-  /* const operationFailCallback = (err: any) => {
-    req.error(500, `Error uploading file: ${err}`)
-  } */
-
-  const operationResult = await streamOperation;
-  req.json(200, { fileName: operationResult })
-
-  return;
-}
-
-const uploadPhoto = $(async (formData: FormData, origin: string) => {
-  const request = await fetch(origin, {
-    method: 'POST',
-    body: formData
-  });
-
-  return noSerialize(request);
-})
-
 const localClient = createClient(import.meta.env.PUBLIC_DB_URL, import.meta.env.PUBLIC_DB_KEY);
 
 export default component$(() => {
+  const getJournal = $(async (uuid: string) => {
+    const { data, error } = await localClient.from('journals').select().eq('uuid', uuid);
+
+    if (error) {
+      return null;
+    }
+
+    return data[0] as Row;
+  })
 
   const addJournalToDatabase = $(async (journalData: Partial<Row>) => {
     const { data, error } = await localClient.from('journals').insert(journalData).select();
@@ -169,7 +104,18 @@ export default component$(() => {
 
   const serverClient = useServerSupabaseClient();
   const { journals, userId, auth } = serverClient.value;
-  //console.log('Server Loader:', {journals, userId, auth});
+  console.log('Server Loader:', {journals, userId, auth});
+
+  const feed = useStore<{ journals: Row[] }>({ journals: [] })
+
+  useVisibleTask$(async () => {
+    const { data } = await localClient.from('journals')
+    .select('*').eq('draft', false)
+    .eq('private', false)
+    .eq('basic_date', dayjs().format('DD/MM/YYYY'));
+  
+    feed.journals = data as Row[];
+  })
 
   const location = useLocation();
   const searchParams = location.url.searchParams;
@@ -178,7 +124,8 @@ export default component$(() => {
     'viewing-daily-prompt', 
     'writing-answer',
     'viewing-journal-published',
-    'viewing-journal-draft'
+    'viewing-journal-draft',
+    'viewing-community'
   ];
   if (!pageRoute || !possibleRoutes.includes(pageRoute)) {
     pageRoute = 'viewing-daily-prompt';
@@ -265,27 +212,37 @@ export default component$(() => {
     });
   });
 
+  const uploadPhoto = $(async (formData: FormData) => {
+    const serverURL = `https://ntrl-server-production.up.railway.app/upload/${userId}`;
+    const request = await fetch(serverURL, {
+      method: 'POST',
+      body: formData
+    });
+  
+    return noSerialize(request);
+  })
+
+  const photoIsUploading = useSignal(false);
+
   const photoInputHandler = $(async (e: any, targetElement: HTMLInputElement) => {
     const event = e as Event;
     console.log({event, targetElement});
 
     if (targetElement.files) {
       const photo = targetElement.files[0];
+
+      const megabyte = 1048576;
+      if (photo.size > (5 * megabyte)) {
+        //optional size limiter.
+      }
+
       const dimensions = await getImageDimensions(photo);
       console.log({dimensions})
+      
+      const isVertical = dimensions.height > dimensions.width;
+      currentJournalData.vertical = isVertical;
 
-      const photoBox = document.querySelector('.photo-take-box') as HTMLElement;
-      photoBox.classList.add('preview-photo');
-
-      const previewImage = photoBox.querySelector('img.photo-preview') as HTMLImageElement;
-
-      setTimeout(() => {
-        const isVertical = dimensions.height > dimensions.width;
-        currentJournalData.vertical = isVertical;
-      }, 100);
-
-      currentJournalData.image_url = `https://i.ibb.co/60PTxt1/loading.gif`;
-      previewImage.classList.add('loading');
+      photoIsUploading.value = true;
 
       const meta = await exifr.parse(photo);
       const metaWrapper = document.querySelector('.photo-preview-meta') as HTMLElement;
@@ -318,11 +275,16 @@ export default component$(() => {
       formData.append('userid', userId)
       formData.append(photo.name, photo)
 
-      const uploadResponse = await uploadPhoto(formData, location.url.origin);
+      const uploadResponse = await uploadPhoto(formData);
 
       const uploadData = await uploadResponse?.json();
       const { fileName } = uploadData;
-      previewImage.classList.remove('loading');
+
+      const img = document.querySelector('.photo-preview') as HTMLImageElement;
+      img.onload = () => {
+        photoIsUploading.value = false;
+      }
+
       currentJournalData.image_url = `https://storage.googleapis.com/natural-bucket/${fileName}`;
 
       takePhotoLabel.value = 'Retake Photo';
@@ -558,7 +520,8 @@ export default component$(() => {
       }
       
       const addTemplateJournal = addJournalToDatabase({
-        user_email: auth.session.user.email
+        user_email: auth.session.user.email,
+        basic_date: dayjs().format('DD/MM/YYYY')
       });
       routeSPA('writing-answer', [addTemplateJournal]);
 
@@ -576,7 +539,18 @@ export default component$(() => {
   })
 
   const viewPublishedHandler = $(async () => {
-      routeSPA('viewing-journal-published', []);
+    routeSPA('viewing-journal-published', []);
+  })
+  const viewCommunityPublishedHandler = $(async (uuid: string) => {
+    const journalDataCall = getJournal(uuid);
+    routeSPA('viewing-journal-published', [journalDataCall]);
+
+    const journalData = await journalDataCall;
+    Object.assign(currentJournalData, journalData);
+  })
+
+  const viewCommunityHandler = $(async () => {
+    routeSPA('viewing-community', []);
   })
 
   const saveDraftHandler = $(async (e: any, element: HTMLButtonElement) => {
@@ -649,18 +623,22 @@ export default component$(() => {
             <div class="daily-prompt-buttons">
               {windowIsOpen.value ? <></> : currentJournalData.draft !== false ? <div class="explanation">You must be in the {sunActionText.value} window in order to answer.</div> : <></>}
 
-              {currentJournalData.draft === false ? (
+              {currentJournalData.draft === false ? (<>
 
-                <div class="view-published-wrapper">
+                <div class="view-published-wrapper"  onClick$={viewPublishedHandler} >
                   <div class="published-image-preview">
                     {// eslint-disable-next-line qwik/jsx-img
                     <img height={400} width={400} src={currentJournalData.image_url || ''} alt="" />}
                     <div class="view-published-fade-background"></div>
                   </div>
-                  <button onClick$={viewPublishedHandler} class="view-published-button">View Your Answer →</button>
+                  <button class="view-published-button">View Your Answer →</button>
                 </div>
 
-              ) : draftExists.value ? (
+                <div class="view-community-wrapper">
+                  <button onClick$={viewCommunityHandler} class="view-community-button">See how others answered →</button>
+                </div>
+
+              </>) : draftExists.value ? (
                 <button onClick$={viewDraftHandler} class="view-draft-button">
                   <div class="continue-draft-text">Continue Draft →</div>
                   <div class="draft-snippet">{currentJournalData.answer}</div>
@@ -720,7 +698,7 @@ export default component$(() => {
           <div class="daily-prompt-text">{dailyPrompt.value}</div>
         </div>
 
-        <div class={`photo-take-box ${currentJournalData.image_url && 'preview-photo'} ${currentJournalData.vertical && 'vertical'}`}>
+        <div class={`photo-take-box ${currentJournalData.image_url && 'preview-photo'} ${currentJournalData.vertical ? 'vertical' : ''} ${photoIsUploading.value ? 'loading' : ''}`}>
           <div class="photo-take-text">{sunActionText.value} available starting at {lowerBoundTime.value && dayjs(lowerBoundTime.value).format('h:mm A')}</div>
 
           <div class="time-information">
@@ -735,6 +713,9 @@ export default component$(() => {
           <div class="photo-preview-box">
             {// eslint-disable-next-line qwik/jsx-img
             <img class="photo-preview" src={currentJournalData.image_url || ''} alt=""></img>}
+            <div class="photo-loader">
+              <span class="loader"></span>
+            </div>
           </div>
           <div class="photo-preview-meta">
               
@@ -773,7 +754,7 @@ export default component$(() => {
         <div class="journal-meta-box">
           <div class="journal-meta-dating">
             <div class="creation-date">
-            {currentJournalData.created_at && dayjs(currentJournalData.created_at).format('D.M.YYYY')}
+            {currentJournalData.created_at && dayjs(currentJournalData.created_at).format('MMMM D, YYYY')}
             </div>
             <div class="creation-time">
             {currentJournalData.created_at && dayjs(currentJournalData.created_at).format('h:mm A')}
@@ -808,6 +789,33 @@ export default component$(() => {
         <div class="viewing-answer-box">
           <div class="viewing-answer-text">{currentJournalData.answer}</div>
         </div>
+      </div>
+
+      <div class={`community-wrapper`}>
+        <div class="navigation-buttons">
+          <div class="go-home" onClick$={() => routeSPA('viewing-daily-prompt', [])}>← Go Home</div>
+          {/* <div class="explore-answers" onClick$={() => routeSPA('viewing-daily-prompt')}>Explore Answers →</div> */}
+        </div>
+
+        <div class="feed">
+        
+          {(feed.journals.length > 0) ? feed.journals.map((journal) => {
+            return (
+              <div key={journal.uuid} class="view-published-wrapper"onClick$={() => {
+                viewCommunityPublishedHandler(journal.uuid)
+              }} >
+                <div class="published-image-preview">
+                  {// eslint-disable-next-line qwik/jsx-img
+                  <img height={400} width={400} src={journal.image_url || ''} alt="" />}
+                  <div class="view-published-fade-background"></div>
+                </div>
+                <button class="view-published-button">View {journal.user_first_name || journal.user_email}'s Answer →</button>
+              </div>
+            )
+          }) : <></>}
+
+        </div>
+
       </div>
     </div>
   );

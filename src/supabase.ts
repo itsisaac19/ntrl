@@ -12,34 +12,40 @@ export interface Database {
       journals: {
         Row: {
           answer: string | null
+          basic_date: string | null
           created_at: string
           draft: boolean | null
           image_url: string | null
           location: string | null
           private: boolean | null
           user_email: string | null
+          user_first_name: string | null
           uuid: string
           vertical: boolean | null
         }
         Insert: {
           answer?: string | null
+          basic_date?: string | null
           created_at?: string
           draft?: boolean | null
           image_url?: string | null
           location?: string | null
           private?: boolean | null
           user_email?: string | null
+          user_first_name?: string | null
           uuid?: string
           vertical?: boolean | null
         }
         Update: {
           answer?: string | null
+          basic_date?: string | null
           created_at?: string
           draft?: boolean | null
           image_url?: string | null
           location?: string | null
           private?: boolean | null
           user_email?: string | null
+          user_first_name?: string | null
           uuid?: string
           vertical?: boolean | null
         }

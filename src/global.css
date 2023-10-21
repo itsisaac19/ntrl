@@ -46,6 +46,13 @@ body.sunrise-theme {
 .auth-landing-message {
   color: white;
   font-size: 50px;
+
+  display: grid;
+  padding: 20px 20px 20px 10px;
+}
+.auth-landing-message img {
+  width: 100%;
+  height: auto;
 }
 
 .supabase-auth-ui_ui-button,
@@ -141,6 +148,7 @@ body.sunrise-theme {
 .published-image-preview {
   display: grid;
   position: relative;
+  border: 1px solid var(--accent-color);
 }
 .view-published-fade-background {
   position: absolute;
@@ -152,7 +160,6 @@ body.sunrise-theme {
 }
 .published-image-preview img {
   width: 100%;
-  border-radius: 14px;
   object-fit: cover;
 }
 .view-published-button {
@@ -206,6 +213,23 @@ body.sunrise-theme {
 
   display: none;
 }
+.view-community-wrapper {
+  display: grid;
+  position: relative;
+} 
+.view-community-button {
+  font: unset;
+  font-size: 18px;
+  background: black;
+  border: 1px solid var(--sun-path-color);
+  
+  color: var(--accent-color);
+  padding: 10px 13px;
+  text-align: left;
+}
+
+
+
 .astronomy-information-wrapper {
   display: grid;
   margin: 20px 0 40px 0;
@@ -470,9 +494,75 @@ body.sunrise-theme {
 .photo-preview-box {
   display: none;
 }
+
+.photo-loader {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+
+  z-index: 100;
+}
+.loading .photo-loader {
+  display: grid;
+}
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 2px solid #FFF;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+.loader::after {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  width: 6px;
+  height: 6px;
+  transform: translate(150%, 150%);
+  border-radius: 50%;
+}
+.loader::before {
+  content: '';  
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background: #ffffff;
+  width: 6px;
+  height: 6px;
+  transform: translate(150%, 150%);
+  border-radius: 50%;
+}
+.loader::before {
+  left: auto;
+  top: auto;
+  right: 0;
+  bottom: 0;
+  transform: translate(-150%, -150%);
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
+
+
 .preview-photo .photo-preview-box {
   display: grid;
-  background: white;
+  background: rgb(0, 0, 0);
+  position: relative;
 }
 .photo-preview {
   height: 25vh;
@@ -484,8 +574,8 @@ body.sunrise-theme {
 
   transition: height 0.5s ease;
 }
-.photo-preview.loading {
-  object-fit: contain;
+.loading .photo-preview{
+  opacity: 0;
 }
 .vertical .photo-preview {
   height: 50vh;
@@ -702,12 +792,10 @@ body.sunrise-theme {
 .journal-meta-dating .creation-date {
   font-family: "mrs-eaves-roman-lining";
   font-size: 16px;
-  letter-spacing: 1px;
 }
 .journal-meta-dating .creation-time {
   font-family: "mrs-eaves-roman-lining";
   font-size: 16px;
-  letter-spacing: 1px;
 }
 .divider {
   width: 1px;
@@ -829,4 +917,21 @@ body.sunrise-theme {
   margin: 0 0 0px 0;
 
   height: auto;
+}
+
+[data-page='viewing-community'] .community-wrapper {
+  display: grid;
+}
+.community-wrapper {
+  display: none;
+}
+.community-wrapper .navigation-buttons {
+  position: fixed;
+  z-index: 10;
+}
+.feed {
+  margin: 42px 0 0 0;
+  display: grid;
+  grid-auto-flow: row;
+  row-gap: 20px;
 }
