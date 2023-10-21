@@ -1,5 +1,5 @@
-import { $, component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import { server$, useLocation, type DocumentHead, type RequestHandler } from "@builder.io/qwik-city";
+import { $, component$, noSerialize, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
+import { useLocation, type DocumentHead, type RequestHandler } from "@builder.io/qwik-city";
 
 import exifr from 'exifr';
 import dayjs from 'dayjs';
@@ -81,8 +81,6 @@ const storage = new Storage({
   credentials: credentials,
 });
 
-let overrideWindow = false;
-
 type BodyType = {
   'userid': string;
 } & {
@@ -136,9 +134,19 @@ export const onPost: RequestHandler = async (req) => {
   return;
 }
 
+const uploadPhoto = $(async (formData: FormData, origin: string) => {
+  const request = await fetch(origin, {
+    method: 'POST',
+    body: formData
+  });
+
+  return noSerialize(request);
+})
+
 const localClient = createClient(import.meta.env.PUBLIC_DB_URL, import.meta.env.PUBLIC_DB_KEY);
 
 export default component$(() => {
+
   const addJournalToDatabase = $(async (journalData: Partial<Row>) => {
     const { data, error } = await localClient.from('journals').insert(journalData).select();
 
@@ -176,9 +184,7 @@ export default component$(() => {
     pageRoute = 'viewing-daily-prompt';
   }
 
-  if (searchParams.get('overridewindow')) {
-    overrideWindow = true;
-  }
+  const overrideWindow = useSignal(searchParams.get('overridewindow') ? true : false);
 
   const customSPA = useStore({
     route: pageRoute,
@@ -259,7 +265,7 @@ export default component$(() => {
     });
   });
 
-  const photoInputHandler = server$(async (e: any, targetElement: HTMLInputElement) => {
+  const photoInputHandler = $(async (e: any, targetElement: HTMLInputElement) => {
     const event = e as Event;
     console.log({event, targetElement});
 
@@ -312,12 +318,9 @@ export default component$(() => {
       formData.append('userid', userId)
       formData.append(photo.name, photo)
 
-      const uploadResponse = await fetch('./', {
-        method: 'POST',
-        body: formData
-      })
+      const uploadResponse = await uploadPhoto(formData, location.url.origin);
 
-      const uploadData = await uploadResponse.json();
+      const uploadData = await uploadResponse?.json();
       const { fileName } = uploadData;
       previewImage.classList.remove('loading');
       currentJournalData.image_url = `https://storage.googleapis.com/natural-bucket/${fileName}`;
@@ -426,7 +429,7 @@ export default component$(() => {
         return journal.draft;
       }).find(journal => {
         let currentInstance = dayjs(journal.created_at);
-        if (overrideWindow) {
+        if (overrideWindow.value) {
           currentInstance = lowerInstance.add(60, 'minutes')
         }
 
@@ -472,7 +475,7 @@ export default component$(() => {
       const upperInstance = dayjs(upperBoundTime.value);
 
       let currentInstance = dayjs();
-      if (overrideWindow) {
+      if (overrideWindow.value) {
         currentInstance = lowerInstance.add(60, 'minutes')
       }
 
@@ -487,7 +490,7 @@ export default component$(() => {
         windowIsOpen.value = true;
       }
 
-      if (overrideWindow === true) {
+      if (overrideWindow.value === true) {
         windowIsOpen.value = true;
       }
 
@@ -537,7 +540,6 @@ export default component$(() => {
       const currentBoundLine = document.querySelector('.current-window-bound') as HTMLElement;
       currentBoundLine.style.bottom = `${percentOf24hoursToPixelHeight(currentFraction)}px`;
     }
-    timeManagement();
     setInterval(timeManagement, 1000);
 
     if (!pageWrapper.value) return;

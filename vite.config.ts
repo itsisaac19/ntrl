@@ -11,9 +11,6 @@ export default defineConfig(() => {
       headers: {
         "Cache-Control": "public, max-age=600",
       },
-    },
-    ssr: {
-      external: ['fs']
     }
   };
 });
