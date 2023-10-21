@@ -42,3 +42,7 @@ lerna-debug.log*
 
 # Vercel
 .vercel
+
+.vercel
+constant-crow-377602-3afac1223bd1.json
+public/questions.txt

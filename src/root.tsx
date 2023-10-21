@@ -23,6 +23,7 @@ export default component$(() => {
         <link rel="manifest" href="/manifest.json" />
         <RouterHead />
         <ServiceWorkerRegister />
+        <link rel="stylesheet" href="https://use.typekit.net/okp7bvi.css"></link>
       </head>
       <body lang="en">
         <RouterOutlet />
