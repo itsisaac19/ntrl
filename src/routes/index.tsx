@@ -69,7 +69,9 @@ export const useServerSupabaseClient = routeLoader$(async (requestEvent) => {
 import { questionBank } from '../components/questions.js';
 const questions = questionBank as { [key: string]: string };
 
-const localClient = createClient(import.meta.env.PUBLIC_DB_URL, import.meta.env.PUBLIC_DB_KEY);
+const supabaseUrl = 'https://qjpeursbnlmjowsuwigl.supabase.co'
+const supabaseKey = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFqcGV1cnNibmxtam93c3V3aWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU0ODI5OTYsImV4cCI6MjAwMTA1ODk5Nn0.s6bnKJbvt24vwIUIZ83uexzMz6YGyUmPxPC3nzXXQI8`;
+const localClient = createClient(supabaseUrl, supabaseKey);
 
 export default component$(() => {
   const getJournal = $(async (uuid: string) => {
