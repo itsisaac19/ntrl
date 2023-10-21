@@ -1,5 +1,5 @@
 import { $, component$, useSignal, useStore, useVisibleTask$ } from "@builder.io/qwik";
-import { useLocation, type DocumentHead, type RequestHandler } from "@builder.io/qwik-city";
+import { server$, useLocation, type DocumentHead, type RequestHandler } from "@builder.io/qwik-city";
 
 import exifr from 'exifr';
 import dayjs from 'dayjs';
@@ -259,7 +259,7 @@ export default component$(() => {
     });
   });
 
-  const photoInputHandler = $(async (e: any, targetElement: HTMLInputElement) => {
+  const photoInputHandler = server$(async (e: any, targetElement: HTMLInputElement) => {
     const event = e as Event;
     console.log({event, targetElement});
 
