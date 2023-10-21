@@ -8,7 +8,7 @@ export default extendConfig(baseConfig, () => {
       ssr: true,
       rollupOptions: {
         input: ["src/entry.vercel-edge.tsx", "@qwik-city-plan"],
-        external: ['fs', 'path', 'util', 'stream', 'url']
+        external: ['@google-cloud']
       },
       outDir: ".vercel/output/functions/_qwik-city.func",
     },
