@@ -22,6 +22,7 @@ import { createClient } from "@supabase/supabase-js";
 type Row = Database['public']['Tables']['journals']['Row'];
 
 export const useServerSupabaseClient = routeLoader$(async (requestEvent) => {
+
   const supabaseClient = createServerClient(
     requestEvent.env.get('DB_PUBLIC_URL')!,
     requestEvent.env.get('DB_PUBLIC_KEY')!,
@@ -53,8 +54,6 @@ export const useServerSupabaseClient = routeLoader$(async (requestEvent) => {
   const { 
     data: userJournals 
   } = await supabaseClient.from('journals').select('*').eq('user_email', userEmail);
-
-  console.log(requestEvent)
 
 
   return { 
@@ -106,7 +105,7 @@ export default component$(() => {
 
   const serverClient = useServerSupabaseClient();
   const { journals, userId, auth } = serverClient.value;
-  console.log('Server Loader:', {journals, userId, auth});
+  //console.log('Server Loader:', {journals, userId, auth});
 
   const feed = useStore<{ journals: Row[] }>({ journals: [] })
 
@@ -169,6 +168,7 @@ export default component$(() => {
   })
 
   const currentJournalData = useStore<Partial<Row>>({})
+  const viewingJournalData = useStore<Partial<Row>>({})
 
   const answerTextTypeHandler = $((e: any, targetElement: HTMLDivElement) => {
     /* const event = e as KeyboardEvent;
@@ -332,8 +332,8 @@ export default component$(() => {
     return convertedTimes;
   })
 
-  const todaysQuestion = questions[`${dayjs().dayOfYear()}`];
-  const dailyPrompt = useSignal(todaysQuestion)
+
+  const dailyPrompt = useSignal('')
 
   const answerBoxFocused = useSignal(false);
   const sunActionText = useSignal<'sunrise' | 'sunset'>('sunrise');
@@ -344,13 +344,15 @@ export default component$(() => {
 
   const datingDataLoaded = useSignal(false);
   const draftExists = useSignal(false);
+  const publishedExists = useSignal(false);
 
   const pageWrapper = useSignal<HTMLElement>();
   const sunCircleHeight = useSignal(500);
 
 
-
   useVisibleTask$(async () => {
+    dailyPrompt.value = questions[`${dayjs().dayOfYear()}`];
+
     const pageNameInURL = location.url.searchParams.get('page');
     const pageNameActual = customSPA.route;
     if (pageNameInURL !== pageNameActual) {
@@ -428,6 +430,7 @@ export default component$(() => {
 
     if (publishedAnswer) {
       Object.assign(currentJournalData, publishedAnswer);
+      publishedExists.value = true;
     } else {
       checkForDrafts();
     }
@@ -491,6 +494,12 @@ export default component$(() => {
       const lowerBoundFraction = instanceInMinutes(lowerInstance) / (24 * 60);
       const lowerBoundLine = document.querySelector('.lower-window-bound') as HTMLElement;
       lowerBoundLine.style.bottom = `${percentOf24hoursToPixelHeight(lowerBoundFraction)}px`;
+      
+      const filledRectangle = document.querySelector('.window-filled-rectangle') as HTMLElement;
+      filledRectangle.style.bottom = `${percentOf24hoursToPixelHeight((sunActionText.value === 'sunset' ? upperBoundFraction : lowerBoundFraction)) + 1}px`;
+      const diff = percentOf24hoursToPixelHeight(upperBoundFraction) - percentOf24hoursToPixelHeight(lowerBoundFraction);
+      console.log({diff})
+      filledRectangle.style.height = `${Math.abs(diff) - 1}px`;
 
       const currentFraction = instanceInMinutes(currentInstance) / (24 * 60);
       const currentTheta = Math.PI * (1 - currentFraction);
@@ -510,7 +519,7 @@ export default component$(() => {
     const wrapper = pageWrapper.value;
     setTimeout(() => {
       wrapper.classList.add('initial-animation-done');
-    }, 2000)
+    }, 3000)
   }) 
 
 
@@ -548,7 +557,7 @@ export default component$(() => {
     routeSPA('viewing-journal-published', [journalDataCall]);
 
     const journalData = await journalDataCall;
-    Object.assign(currentJournalData, journalData);
+    Object.assign(viewingJournalData, journalData);
   })
 
   const viewCommunityHandler = $(async () => {
@@ -584,6 +593,7 @@ export default component$(() => {
     //element.classList.remove('valid');
 
     console.log({currentJournalData});
+    Object.assign(viewingJournalData, currentJournalData)
 
     routeSPA('viewing-journal-draft', []);
   })
@@ -636,10 +646,6 @@ export default component$(() => {
                   <button class="view-published-button">View Your Answer →</button>
                 </div>
 
-                <div class="view-community-wrapper">
-                  <button onClick$={viewCommunityHandler} class="view-community-button">See how others answered →</button>
-                </div>
-
               </>) : draftExists.value ? (
                 <button onClick$={viewDraftHandler} class="view-draft-button">
                   <div class="continue-draft-text">Continue Draft →</div>
@@ -649,6 +655,10 @@ export default component$(() => {
                 <button onClick$={answerPromptButtonHandler} class={`answer-early-button ${windowIsOpen.value ? 'available' : ''}`}>I have an answer →</button>
               )}
 
+              <div class="view-community-wrapper">
+                <button onClick$={viewCommunityHandler} class="view-community-button">See how others answered →</button>
+              </div>
+              
               <button class="answer-at-button">I need time to think →</button>
             </div>
 
@@ -673,6 +683,9 @@ export default component$(() => {
             </div>
             <div class="current-window-bound">
               <div class="bound-label-wrap"></div>
+            </div>
+            <div class="window-filled-rectangle">
+                <span class="window-rectangle-text">{sunActionText.value} window</span>
             </div>
 
             <div class="lower-window-bound">
@@ -743,7 +756,7 @@ export default component$(() => {
       <div class={`view-journal-wrapper`}>
         <div class="image-background-full">
           {// eslint-disable-next-line qwik/jsx-img
-          <img src={currentJournalData.image_url || ''} alt="" />}
+          <img src={viewingJournalData.image_url || ''} alt="" />}
         </div>
 
         <div class="fade-out-background"></div>
@@ -756,21 +769,21 @@ export default component$(() => {
         <div class="journal-meta-box">
           <div class="journal-meta-dating">
             <div class="creation-date">
-            {currentJournalData.created_at && dayjs(currentJournalData.created_at).format('MMMM D, YYYY')}
+            {viewingJournalData.created_at && dayjs(viewingJournalData.created_at).format('MMMM D, YYYY')}
             </div>
             <div class="creation-time">
-            {currentJournalData.created_at && dayjs(currentJournalData.created_at).format('h:mm A')}
+            {viewingJournalData.created_at && dayjs(viewingJournalData.created_at).format('h:mm A')}
             </div>
           </div>
           <div class="divider"></div>
 
-          <div class="journal-visibility-label">{currentJournalData.private ? 'Private' : 'Public'}</div>
+          <div class="journal-visibility-label">{viewingJournalData.private ? 'Private' : 'Public'}</div>
           
           <div class="journal-meta-visibility">
             <label class='privacy-select-label' for="privacy-select">Privacy</label>
             <select onInput$={(ev: any, element: HTMLSelectElement) => {
               const isPrivateSelected = element.value === 'private';
-              currentJournalData.private = isPrivateSelected;
+              viewingJournalData.private = isPrivateSelected;
             }} name="" id="privacy-select">
               <option value="private">Private</option>
               <option value="public">Public</option>
@@ -789,13 +802,16 @@ export default component$(() => {
         </div>
 
         <div class="viewing-answer-box">
-          <div class="viewing-answer-text">{currentJournalData.answer}</div>
+          <div class="viewing-answer-text">{viewingJournalData.answer}</div>
         </div>
       </div>
 
       <div class={`community-wrapper`}>
         <div class="navigation-buttons">
-          <div class="go-home" onClick$={() => routeSPA('viewing-daily-prompt', [])}>← Go Home</div>
+          <div class="go-home" onClick$={() => {   
+            routeSPA('viewing-daily-prompt', [])
+            
+          }}>← Go Home</div>
           {/* <div class="explore-answers" onClick$={() => routeSPA('viewing-daily-prompt')}>Explore Answers →</div> */}
         </div>
 

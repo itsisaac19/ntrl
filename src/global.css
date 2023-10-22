@@ -97,7 +97,7 @@ body.sunrise-theme {
   grid-template-rows: 0fr;
   overflow: hidden;
   opacity: 0;
-  transition: grid-template-rows 1s ease, opacity 1.5s cubic-bezier(.67,.1,.72,.44);
+  transition: grid-template-rows 2s ease, opacity 2.5s cubic-bezier(.67,.1,.72,.44);
 }
 .initial-animation-done .daily-prompt-meta-outer-wrapper{
   grid-template-rows: 1fr;
@@ -351,6 +351,21 @@ body.sunrise-theme {
   width: 70vw;
   display: grid;
   transition: bottom 0.5s ease;
+}
+.sun-path .window-filled-rectangle {
+  position: absolute;
+  background: rgba(255, 217, 0, 0.283);
+  height: 0px;
+  bottom: 0%;
+  right: 0;
+  left: 0;
+  display: grid;
+}
+.window-rectangle-text {
+  margin: auto auto auto 15px;
+  color: var(--accent-color);
+  font-style: italic;
+  font-size: 18px;
 }
 .sun-path .current-window-bound {
   background: var(--accent-color);
@@ -715,7 +730,7 @@ body.sunrise-theme {
 }
 .image-background-full {
   background: white;
-  height: calc(100dvh - 100px);
+  height: calc(100dvh);
   width: 100%;
 }
 .image-background-full img {
@@ -726,7 +741,8 @@ body.sunrise-theme {
 
 .view-journal-wrapper .daily-prompt-box {
   position: absolute;
-  bottom: 100px;
+  top: calc(100dvh);
+  translate: 0 -100%;
   left: 0;
   right: 0;
   margin: 0px;
@@ -739,8 +755,9 @@ body.sunrise-theme {
 }
 
 .fade-out-background {
+  display: none;
   position: absolute;
-  top: calc(100dvh - 200px);
+  top: calc(100vh - 100px);
   left: 0;
   right: 0;
   height: 100px;
