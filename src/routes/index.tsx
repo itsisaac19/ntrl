@@ -392,13 +392,14 @@ export default component$(() => {
       const upperInstance = dayjs(upperBoundTime.value);
   
       const draft = journals.filter(journal => {
-        return journal.draft;
+        const isDraft = journal.draft ? true : false;
+        const isToday = journal.basic_date === dayjs().format('DD/MM/YYYY');
+        return (isDraft && isToday);
       }).find(journal => {
         let currentInstance = dayjs(journal.created_at);
         if (overrideWindow.value) {
           currentInstance = lowerInstance.add(60, 'minutes')
         }
-
 
         if (currentInstance.isAfter(lowerInstance) && currentInstance.isBefore(upperInstance)) {
           console.log('this journal is a draft!', {journal})
@@ -430,6 +431,7 @@ export default component$(() => {
 
     if (publishedAnswer) {
       Object.assign(currentJournalData, publishedAnswer);
+      Object.assign(viewingJournalData, publishedAnswer);
       publishedExists.value = true;
     } else {
       checkForDrafts();
@@ -498,7 +500,7 @@ export default component$(() => {
       const filledRectangle = document.querySelector('.window-filled-rectangle') as HTMLElement;
       filledRectangle.style.bottom = `${percentOf24hoursToPixelHeight((sunActionText.value === 'sunset' ? upperBoundFraction : lowerBoundFraction)) + 1}px`;
       const diff = percentOf24hoursToPixelHeight(upperBoundFraction) - percentOf24hoursToPixelHeight(lowerBoundFraction);
-      console.log({diff})
+      //console.log({diff})
       filledRectangle.style.height = `${Math.abs(diff) - 1}px`;
 
       const currentFraction = instanceInMinutes(currentInstance) / (24 * 60);
@@ -621,6 +623,10 @@ export default component$(() => {
     console.log({e, element});
   })
 
+  const signOutHandler = $(() => {
+    window.location.assign('/auth');
+  })
+
   return (
     <div ref={pageWrapper} class="biggest-wrapper" data-page={customSPA.route}>
 
@@ -704,6 +710,11 @@ export default component$(() => {
             </div>
           </div>
 
+        </div>
+
+        <div class="footer-credits-wrapper">
+          <div class="sign-out-button" onClick$={signOutHandler}>sign out</div>
+          <span>Questions by Marc Chernoff</span>
         </div>
       </div>
 

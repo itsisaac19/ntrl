@@ -44,8 +44,7 @@ body.sunrise-theme {
 }
 
 .auth-landing-message {
-  color: white;
-  font-size: 50px;
+  color: var(--accent-color);
 
   display: grid;
   padding: 20px 20px 20px 10px;
@@ -54,17 +53,46 @@ body.sunrise-theme {
   width: 100%;
   height: auto;
 }
+.auth-action-header {
+  font-size: 30px;
+  color: var(--accent-color);
+  padding: 0px;
+  line-height: 1em;
+  text-align: center;
+  margin: 0px 0 30px 0px;
+}
 
 .supabase-auth-ui_ui-button,
 .supabase-auth-ui_ui-input,
 .supabase-auth-ui_ui-label,
 .supabase-auth-ui_ui-anchor {
   font-family: system-ui !important;
+  color: var(--accent-color) !important;
 }
 
 [type="submit"].supabase-auth-ui_ui-button {
   background-color: rgb(73, 73, 73);
   border-color: rgb(33, 33, 33);
+}
+#auth-sign-in > div > div.supabase-auth-ui_ui-container:has(.supabase-auth-ui_ui-anchor) {
+  display: none;
+}
+#auth-sign-up > div > div.supabase-auth-ui_ui-container:has(.supabase-auth-ui_ui-anchor) {
+  display: none;
+}
+
+.switcher {
+  display: grid;
+}
+.switcher button {
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 0;
+  color: var(--accent-color);
+  border: 1px solid var(--sun-path-color);
+  padding: 10px 15px;
+  background: none;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 .biggest-wrapper {
@@ -408,7 +436,30 @@ body.sunrise-theme {
 }
 
 
-
+.footer-credits-wrapper {
+  margin: 20px 0px 20px 0;
+  padding: 10px;
+  display: grid;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+.footer-credits-wrapper span {
+  margin: auto;
+  color: var(--accent-color);
+  letter-spacing: 1px;
+  font-style: italic;
+}
+.initial-animation-done .footer-credits-wrapper {
+  opacity: 1;
+}
+.footer-credits-wrapper .sign-out-button {
+  border: 1px solid var(--sun-path-color);
+  color: var(--accent-color);
+  text-align: center;
+  width: max-content;
+  margin: 30px auto;
+  padding: 10px 15px;
+}
 
 /* ANSWER WRITING */
 
