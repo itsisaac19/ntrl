@@ -2,6 +2,7 @@ import { $, component$, useSignal, useVisibleTask$ } from "@builder.io/qwik";
 
 import { AuthUI } from "~/components/router-head/auth-ui";
 import ImgNtrlLogo from '~/media/ntrl-logo-dark@2x.png?jsx';
+import ImgCacLogo from '~/media/cac-logo.png?jsx';
 
 import { createClient } from '@supabase/supabase-js';
 
@@ -38,6 +39,7 @@ export default component$(() => {
         <div class={`auth-wrapper ${loaded.value ? 'loaded' : ''}`}>
             <div class="auth-landing-message">
                 <ImgNtrlLogo />
+                <ImgCacLogo />
             </div>
             <div class="auth-action-header">
                 {view.value == 'sign_up' ? 'Sign up to create your account.' : 'Welcome back. Sign in to continue.'}
